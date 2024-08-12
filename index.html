@@ -1,97 +1,461 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- (Keep the existing head content) -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Productivity Booster</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            color: #222222;
+            background-color: #f9f9f9;
+        }
+        header, footer {
+            background-color: #222222;
+            color: #fb8706;
+            text-align: center;
+            padding: 1rem;
+        }
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+        }
+        section {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+            padding: 1rem;
+            width: 100%;
+            max-width: 600px;
+        }
+        h2 {
+            margin-top: 0;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+        }
+        .form-row > div {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            margin-right: 10px;
+        }
+        .form-row > div:last-child {
+            margin-right: 0;
+        }
+        input, select, button, textarea {
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            width: 100%;
+        }
+        textarea {
+            height: 100px;
+        }
+        button {
+            background-color: #fb8706;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #e67e22;
+        }
+        .voice-input-button {
+            background-color: #cccccc;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border-radius: 50%;
+            cursor: pointer;
+            margin-left: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .input-group {
+            display: flex;
+            align-items: center;
+        }
+        .badge {
+            display: flex;
+            align-items: center;
+            background-color: #f1c40f;
+            color: #34495e;
+            padding: 0.5rem;
+            margin: 0.5rem;
+            border-radius: 4px;
+            width: calc(33% - 1rem);
+            box-sizing: border-box;
+        }
+        .badge img {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        .badge h4 {
+            margin: 0;
+            font-size: 1rem;
+        }
+        .badge p {
+            margin: 0;
+            font-size: 0.875rem;
+        }
+        .badges-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+    </style>
 </head>
 <body>
-    <!-- (Keep the existing body content) -->
-
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <header>
+        <h1>AI Productivity Booster</h1>
+        <p id="userName">Welcome, Medha Chikhalikar</p>
+    </header>
+    
+    <main>
+        <section id="taskLogging">
+            <h2>Log New Task</h2>
+            <form id="taskForm">
+                <div class="form-row">
+                    <div class="input-group">
+                        <input type="text" id="taskName" placeholder="Task Name" required aria-label="Task Name">
+                        <button type="button" id="voiceTaskName" class="voice-input-button" aria-label="Start Voice Input for Task Name">🎤</button>
+                    </div>
+                    <div class="input-group">
+                        <select id="taskCategory" required aria-label="Task Category">
+                            <option value="">Select Category</option>
+                            <option value="ideaGeneration">Idea Generation</option>
+                            <option value="writing">Writing</option>
+                            <option value="presentation">Presentation</option>
+                            <option value="coding">Coding</option>
+                            <option value="debugging">Debugging</option>
+                            <option value="problemSolving">Problem Solving</option>
+                            <option value="documentation">Documentation</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="input-group">
+                        <input type="number" id="estimatedTime" placeholder="Estimated Manual Time (minutes)" required min="1" aria-label="Estimated Manual Time">
+                        <button type="button" id="voiceEstimatedTime" class="voice-input-button" aria-label="Start Voice Input for Estimated Time">🎤</button>
+                    </div>
+                    <div class="input-group">
+                        <input type="number" id="actualTime" placeholder="Actual AI-Assisted Time (minutes)" required min="1" aria-label="Actual AI-Assisted Time">
+                        <button type="button" id="voiceActualTime" class="voice-input-button" aria-label="Start Voice Input for Actual Time">🎤</button>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <textarea id="taskDetails" placeholder="Explain task in detail" required aria-label="Task Details"></textarea>
+                    <button type="button" id="voiceTaskDetails" class="voice-input-button" aria-label="Start Voice Input for Task Details">🎤</button>
+                </div>
+                <button type="button" id="aiAssist">AI Assist</button>
+                <button type="submit">Log Task</button>
+            </form>
+        </section>
+        
+        <section id="dashboard">
+            <h2>Your Productivity Dashboard</h2>
+            <div id="metrics">
+                <p>Total Tasks: <span id="totalTasks">0</span></p>
+                <p>Time Saved: <span id="timeSaved">0</span> minutes</p>
+                <p>Efficiency Improvement: <span id="efficiency">0</span>%</p>
+            </div>
+            <div id="badges">
+                <h3>Your Badges</h3>
+                <div class="badges-container" id="badgesContainer">
+                    <!-- Badges will be inserted here -->
+                </div>
+            </div>
+            <div id="taskHistory">
+                <h3>Recent Tasks</h3>
+                <table id="taskTable">
+                    <thead>
+                        <tr>
+                            <th>Task</th>
+                            <th>Category</th>
+                            <th>Time Saved</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <button id="clearData" style="margin-top: 1rem;">Clear All Data</button>
+        </section>
+    </main>
+    
+    <footer>
+        <p>&copy; 2023 AI Productivity Booster | Version 1.1</p>
+    </footer>
+    
     <script>
-        const startStopButton = document.getElementById('startStop');
-        const enhanceButton = document.getElementById('enhance');
-        const transcriptionArea = document.getElementById('transcription');
-        const enhancedTextDiv = document.getElementById('enhancedText');
-
-        let recognition;
-        let isRecording = false;
-        let finalTranscript = '';
-
-        if ('webkitSpeechRecognition' in window) {
-            recognition = new webkitSpeechRecognition();
-            recognition.continuous = true;
-            recognition.interimResults = true;
-
-            recognition.onresult = (event) => {
-                let interimTranscript = '';
-                for (let i = event.resultIndex; i < event.results.length; ++i) {
-                    if (event.results[i].isFinal) {
-                        finalTranscript += event.results[i][0].transcript + ' ';
-                    } else {
-                        interimTranscript += event.results[i][0].transcript;
-                    }
-                }
-                transcriptionArea.value = finalTranscript + interimTranscript;
+        document.getElementById('taskForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const task = {
+                name: document.getElementById('taskName').value,
+                category: document.getElementById('taskCategory').value,
+                estimatedTime: Math.max(1, parseInt(document.getElementById('estimatedTime').value)),
+                actualTime: Math.max(1, parseInt(document.getElementById('actualTime').value)),
+                details: document.getElementById('taskDetails').value,
+                timeSaved: Math.max(0, parseInt(document.getElementById('estimatedTime').value) - parseInt(document.getElementById('actualTime').value)),
+                date: new Date().toISOString()
             };
+            saveTasks(task);
+            updateDashboard();
+            this.reset();
+        });
 
-            recognition.onend = () => {
-                if (isRecording) {
-                    recognition.start();
-                }
-            };
-
-            recognition.onerror = (event) => {
-                console.error('Speech recognition error', event.error);
-            };
-        } else {
-            console.log('Web Speech API is not supported in this browser.');
-            startStopButton.disabled = true;
+        function saveTasks(task) {
+            try {
+                let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+                tasks.push(task);
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+            } catch (error) {
+                console.error('Error saving task:', error);
+            }
         }
 
-        startStopButton.onclick = () => {
-            if (isRecording) {
-                recognition.stop();
-                startStopButton.textContent = 'Start Recording';
-                isRecording = false;
-            } else {
-                finalTranscript = '';
-                recognition.start();
-                startStopButton.textContent = 'Stop Recording';
-                isRecording = true;
-            }
-        };
-
-        enhanceButton.onclick = async () => {
-            const text = transcriptionArea.value;
-            if (text.trim() === '') {
-                alert('Please provide some text to enhance.');
-                return;
-            }
-
+        function updateDashboard() {
             try {
-                const response = await axios.post(
-                    'https://api.openai.com/v1/engines/text-davinci-002/completions',
-                    {
-                        prompt: `Enhance the following text by converting it to a formal tone and breaking it into bullet points:\n\n${text}`,
-                        max_tokens: 1000,
-                        n: 1,
-                        stop: null,
-                        temperature: 0.7,
-                    },
-                    {
-                        headers: {
-                            'Authorization': 'Bearer YOUR_OPENAI_API_KEY',
-                            'Content-Type': 'application/json',
-                        },
-                    }
-                );
+                const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+                const totalTasks = tasks.length;
+                const timeSaved = tasks.reduce((total, task) => total + task.timeSaved, 0);
+                const totalEstimatedTime = tasks.reduce((total, task) => total + task.estimatedTime, 0);
+                const efficiency = totalEstimatedTime > 0 ? Math.round((timeSaved / totalEstimatedTime) * 100) : 0;
 
-                enhancedTextDiv.textContent = response.data.choices[0].text.trim();
+                document.getElementById('totalTasks').textContent = totalTasks;
+                document.getElementById('timeSaved').textContent = timeSaved;
+                document.getElementById('efficiency').textContent = efficiency;
+
+                updateTaskHistory(tasks);
+                checkAndAwardBadges(totalTasks, timeSaved, efficiency);
             } catch (error) {
-                console.error('Error enhancing text:', error);
-                alert('An error occurred while enhancing the text. Please try again.');
+                console.error('Error updating dashboard:', error);
             }
-        };
+        }
+
+        function updateTaskHistory(tasks) {
+            const tbody = document.querySelector('#taskTable tbody');
+            tbody.innerHTML = '';
+            tasks.slice(-5).reverse().forEach(task => {
+                const row = tbody.insertRow();
+                row.insertCell(0).textContent = task.name;
+                row.insertCell(1).textContent = task.category;
+                row.insertCell(2).textContent = task.timeSaved + ' minutes';
+                row.insertCell(3).textContent = new Date(task.date).toLocaleDateString();
+            });
+        }
+
+        function checkAndAwardBadges(totalTasks, timeSaved, efficiency) {
+            const badgesContainer = document.getElementById('badgesContainer');
+            badgesContainer.innerHTML = '';
+
+            if (totalTasks >= 1) addBadge('AI Novice', 'Logged your first task!', 'https://via.placeholder.com/40');
+            if (timeSaved >= 60) addBadge('Time Saver', 'Saved over 1 hour!', 'https://via.placeholder.com/40');
+            if (efficiency >= 50) addBadge('Efficiency Expert', 'Improved efficiency by 50%!', 'https://via.placeholder.com/40');
+        }
+
+        function addBadge(title, description, imgSrc) {
+            const badge = document.createElement('div');
+            badge.className = 'badge';
+            badge.innerHTML = `<img src="${imgSrc}" alt="${title} Badge"><div><h4>${title}</h4><p>${description}</p></div>`;
+            document.getElementById('badgesContainer').appendChild(badge);
+        }
+
+        document.getElementById('clearData').addEventListener('click', function() {
+            if (confirm('Are you sure you want to clear all data? This action cannot be undone.')) {
+                localStorage.removeItem('tasks');
+                updateDashboard();
+            }
+        });
+
+        // Voice-to-Text for Task Name
+        const voiceRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (voiceRecognition) {
+            const recognizer = new voiceRecognition();
+            
+            document.getElementById('voiceTaskName').addEventListener('click', () => {
+                recognizer.start();
+                recognizer.onresult = (event) => {
+                    document.getElementById('taskName').value = event.results[0][0].transcript;
+                };
+            });
+
+            document.getElementById('voiceEstimatedTime').addEventListener('click', () => {
+                recognizer.start();
+                recognizer.onresult = (event) => {
+                    document.getElementById('estimatedTime').value = event.results[0][0].transcript;
+                };
+            });
+
+            document.getElementById('voiceActualTime').addEventListener('click', () => {
+                recognizer.start();
+                recognizer.onresult = (event) => {
+                    document.getElementById('actualTime').value = event.results[0][0].transcript;
+                };
+            });
+
+
+
+            recognizer.onerror = (event) => {
+                alert(`Error occurred in recognition: ${event.error}`);
+            };
+        } else {
+            alert('Voice recognition not supported in this browser.');
+        }
+
+
+
+
+// Voice-to-Text for Task Details
+const voiceRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (voiceRecognition) {
+  const recognizer = new voiceRecognition();
+  recognizer.continuous = true;
+  let isRecording = false;
+  let finalTranscript = '';
+
+  const voiceTaskDetailsButton = document.getElementById('voiceTaskDetails');
+  const taskDetailsInput = document.getElementById('taskDetails');
+
+  voiceTaskDetailsButton.addEventListener('click', () => {
+    if (!isRecording) {
+      // Start recording
+      finalTranscript = taskDetailsInput.value;
+      recognizer.start();
+      isRecording = true;
+      voiceTaskDetailsButton.textContent = 'Stop Recording';
+    } else {
+      // Stop recording
+      recognizer.stop();
+      isRecording = false;
+      voiceTaskDetailsButton.textContent = 'Start Recording';
+    }
+  });
+
+  recognizer.onresult = (event) => {
+    let interimTranscript = '';
+    for (let i = event.resultIndex; i < event.results.length; ++i) {
+      if (event.results[i].isFinal) {
+        finalTranscript += event.results[i][0].transcript + ' ';
+      } else {
+        interimTranscript += event.results[i][0].transcript;
+      }
+    }
+    taskDetailsInput.value = finalTranscript + interimTranscript;
+  };
+
+  recognizer.onend = () => {
+    if (isRecording) {
+      recognizer.start();
+    }
+  };
+
+  recognizer.onerror = (event) => {
+    console.error('Error occurred in recognition:', event.error);
+    isRecording = false;
+    voiceTaskDetailsButton.textContent = 'Start Recording';
+  };
+} else {
+  alert('Voice recognition not supported in this browser.');
+}
+
+
+
+
+
+
+
+        
+
+                // AI Assistance for Task Details
+        document.getElementById('aiAssist').addEventListener('click', function() {
+            const taskDetails = document.getElementById('taskDetails').value;
+            const enhancedText = formalizeAndEnhanceText(taskDetails);
+            document.getElementById('taskDetails').value = enhancedText;
+        });
+
+        function formalizeAndEnhanceText(text) {
+            // Split text into sentences
+            const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
+            
+            // Process each sentence
+            const enhancedSentences = sentences.map(sentence => {
+                return enhanceLanguage(sentence.trim());
+            });
+
+            // Convert to bullet points
+            return enhancedSentences.map(sentence => `• ${sentence}`).join('\n');
+        }
+
+        function enhanceLanguage(sentence) {
+            // Capitalize first letter
+            sentence = sentence.charAt(0).toUpperCase() + sentence.slice(1);
+
+            // Replace contractions and informal words
+            const replacements = {
+                'i': 'I',
+                "can't": 'cannot',
+                "don't": 'do not',
+                "won't": 'will not',
+                "shouldn't": 'should not',
+                "couldn't": 'could not',
+                "wouldn't": 'would not',
+                "isn't": 'is not',
+                "aren't": 'are not',
+                "wasn't": 'was not',
+                "weren't": 'were not',
+                "hasn't": 'has not',
+                "haven't": 'have not',
+                "hadn't": 'had not',
+                "didn't": 'did not',
+                'gonna': 'going to',
+                'wanna': 'want to',
+                'gotta': 'got to',
+                'kinda': 'kind of',
+                'sorta': 'sort of',
+                'dunno': 'do not know',
+                'yeah': 'yes',
+                'yep': 'yes',
+                'nope': 'no',
+                'cuz': 'because',
+                'cause': 'because',
+                'cos': 'because',
+                'ok': 'okay'
+            };
+
+            for (const [informal, formal] of Object.entries(replacements)) {
+                const regex = new RegExp(`\\b${informal}\\b`, 'gi');
+                sentence = sentence.replace(regex, formal);
+            }
+
+            // Ensure the sentence ends with proper punctuation
+            if (!/[.!?]$/.test(sentence)) {
+                sentence += '.';
+            }
+
+            return sentence;
+        }
+        // Initial dashboard update
+        updateDashboard();
     </script>
 </body>
 </html>

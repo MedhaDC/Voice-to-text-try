@@ -1,40 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voice to Enhanced Text Prototype</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        textarea {
-            width: 100%;
-            height: 200px;
-            margin-bottom: 20px;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            margin-right: 10px;
-        }
-        #enhancedText {
-            white-space: pre-wrap;
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin-top: 20px;
-        }
-    </style>
+    <!-- (Keep the existing head content) -->
 </head>
 <body>
-    <h1>Voice to Enhanced Text Prototype</h1>
-    <textarea id="transcription" placeholder="Your transcribed text will appear here..."></textarea>
-    <button id="startStop">Start Recording</button>
-    <button id="enhance">Enhance Text</button>
-    <div id="enhancedText"></div>
+    <!-- (Keep the existing body content) -->
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
@@ -45,6 +15,7 @@
 
         let recognition;
         let isRecording = false;
+        let finalTranscript = '';
 
         if ('webkitSpeechRecognition' in window) {
             recognition = new webkitSpeechRecognition();
@@ -55,12 +26,18 @@
                 let interimTranscript = '';
                 for (let i = event.resultIndex; i < event.results.length; ++i) {
                     if (event.results[i].isFinal) {
-                        transcriptionArea.value += event.results[i][0].transcript;
+                        finalTranscript += event.results[i][0].transcript + ' ';
                     } else {
                         interimTranscript += event.results[i][0].transcript;
                     }
                 }
-                transcriptionArea.value += interimTranscript;
+                transcriptionArea.value = finalTranscript + interimTranscript;
+            };
+
+            recognition.onend = () => {
+                if (isRecording) {
+                    recognition.start();
+                }
             };
 
             recognition.onerror = (event) => {
@@ -75,11 +52,13 @@
             if (isRecording) {
                 recognition.stop();
                 startStopButton.textContent = 'Start Recording';
+                isRecording = false;
             } else {
+                finalTranscript = '';
                 recognition.start();
                 startStopButton.textContent = 'Stop Recording';
+                isRecording = true;
             }
-            isRecording = !isRecording;
         };
 
         enhanceButton.onclick = async () => {

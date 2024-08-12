@@ -313,7 +313,12 @@
                 };
             });
 
-
+             document.getElementById('voiceTaskDetails').addEventListener('click', () => {
+                recognizer.start();
+                recognizer.onresult = (event) => {
+                    document.getElementById('taskDetails').value = event.results[0][0].transcript;
+                };
+            });
 
             recognizer.onerror = (event) => {
                 alert(`Error occurred in recognition: ${event.error}`);
